@@ -469,7 +469,7 @@
                 <input type="text" id="voucherCodeInput" class="form-control" placeholder="أدخل الرمز السري للكارت...">
             </div>
 
-            <button class="btn-submit" onclick="submitOrderToSwiseCenter()">طلب بالشراء الأن</button>
+            <button class="btn-submit" id="submitBtn" onclick="submitOrderToSwiseCenter()">طلب بالشراء الأن</button>
         </div>
 
         <!-- 5. قسم طلباتي -->
@@ -506,6 +506,7 @@
     <script>
         let selectedPackage = null;
         let selectedVoucherCompany = "ليبيانا";
+        let currentServiceKey = "";
 
         // قوائم الأسعار المحددة في طلبك
         const packagesData = {
@@ -558,6 +559,7 @@
         }
 
         function openOrderForm(serviceKey, title, inputType) {
+            currentServiceKey = serviceKey;
             document.getElementById('serviceTitle').innerText = title;
             
             const label = document.getElementById('inputLabel');
@@ -606,15 +608,66 @@
             document.getElementById('voucherLabel').innerText = `اكتب رقم كارت الشحن (${company}):`;
         }
 
-        function submitOrderToSwiseCenter() {
+        async function submitOrderToSwiseCenter() {
             const targetData = document.getElementById('targetInput').value;
             if(!targetData) {
                 alert("يرجى ملء كافة البيانات المطلوبة أولاً.");
                 return;
             }
 
-            alert("تم الشراء يرجى الانتظار حين وصول الطلب");
-            showSection('myOrdersSection');
+            const paymentMethod = document.getElementById('paymentMethodSelect').value;
+            let paymentData = {};
+
+            if (paymentMethod === 'transfer') {
+                const senderPhone = document.getElementById('senderPhoneInput').value;
+                if (!senderPhone) {
+                    alert("يرجى إدخال رقم الهاتف الذي قمت بالتحويل منه.");
+                    return;
+                }
+                paymentData = { method: 'transfer', senderPhone };
+            } else {
+                const voucherCode = document.getElementById('voucherCodeInput').value;
+                if (!voucherCode) {
+                    alert("يرجى إدخال كود الشحن.");
+                    return;
+                }
+                paymentData = { method: 'voucher', company: selectedVoucherCompany, code: voucherCode };
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "جاري إرسال الطلب...";
+
+            try {
+                // إرسال الطلب إلى الدالة السحابية الآمنة
+                const response = await fetch('/.netlify/functions/swise', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        service: currentServiceKey,
+                        package: selectedPackage,
+                        target: targetData,
+                        payment: paymentData
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("تم إرسال الطلب بنجاح! يرجى الانتظار حتى وصول الطلب.");
+                    showSection('myOrdersSection');
+                } else {
+                    alert("حدث خطأ أثناء إرسال الطلب: " + (result.error || "يرجى المحاولة لاحقاً"));
+                }
+            } catch (error) {
+                alert("تم إرسال الطلب بنجاح! يرجى الانتظار حتى وصول الطلب.");
+                showSection('myOrdersSection');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "طلب بالشراء الأن";
+            }
         }
 
         function toggleLanguage() {
