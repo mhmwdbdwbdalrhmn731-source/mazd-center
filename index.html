@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAZD CENTER - متجر الشحن والخدمات</title>
+    <!-- FontAwesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #0d233a;
+            --accent-blue: #1e88e5;
+            --gold: #d4af37;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #051329 0%, #102a45 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* الهيدر العلوي */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(13, 35, 58, 0.95);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+        }
+
+        .site-title {
+            color: var(--accent-blue);
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .menu-btn {
+            background: #808080; /* لون رصاصي */
+            border: none;
+            color: #ffffff; /* أسطر وأيقونات بيضاء */
+            padding: 10px 14px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* صندوق البريد العلوي للأكواد */
+        .inbox-btn {
+            position: relative;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+
+        .inbox-badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background: red;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+
+        /* القائمة الجانبية */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100%;
+            background: #0d233a;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.5);
+            transition: 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .menu-list {
+            list-style: none;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.05);
+            cursor: pointer;
+        }
+
+        .menu-item i {
+            color: #ffffff;
+            font-size: 1.2rem;
+        }
+
+        /* الحاوية الرئيسية */
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        /* الأزرار الرئيسية */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .nav-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5deg);
+            background: rgba(30, 136, 229, 0.25);
+        }
+
+        .nav-card i {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .nav-card h3 {
+            font-size: 1.1rem;
+        }
+
+        /* المربعات السحرية للخيارات/الباقات (اللون السمائي الشفاف) */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .package-box {
+            background: rgba(0, 191, 255, 0.18); /* لون سمائي شفاف */
+            border: 1px solid rgba(0, 191, 255, 0.4);
+            backdrop-filter: blur(5px);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .package-box.selected {
+            border: 2px solid #00bfff;
+            background: rgba(0, 191, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+        }
+
+        .package-box .count {
+            font-weight: bold;
+            font-size: 1rem;
+            display: block;
+        }
+
+        .package-box .price {
+            color: var(--gold);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* نماذج إدخال البيانات */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: #28a745; /* لون أخضر للطلب */
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* زر الواتساب العائم */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            left: 20px; /* في اليسار حسب الطلب */
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            padding: 10px 15px;
+            z-index: 100;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            text-decoration: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .info-box {
+            background: rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .status-pending { background: #ffc107; color: #000; }
+        .status-completed { background: #28a745; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <!-- الهيدر -->
+    <header>
+        <div class="header-logo">
+            <img src="logo.png" alt="MAZD CENTER Logo" id="siteLogo">
+            <span class="site-title">MAZD CENTER</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <!-- صندوق البريد للأكواد (مثل الأيتونز) -->
+            <button class="inbox-btn" onclick="showSection('inboxSection')">
+                <i class="fa-solid fa-envelope"></i>
+                <span class="inbox-badge" id="inboxCount">1</span>
+            </button>
+            <!-- 3 أشرطة بالقائمة الجانبية -->
+            <button class="menu-btn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- القائمة الجانبية -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>القائمة</h3>
+            <button class="close-sidebar" onclick="toggleSidebar()">&times;</button>
+        </div>
+        <ul class="menu-list">
+            <li class="menu-item" onclick="showSection('mainNav'); toggleSidebar();">
+                <i class="fa-solid fa-house"></i>
+                <span>الرئيسية</span>
+            </li>
+            <li class="menu-item" onclick="showSection('myOrdersSection'); toggleSidebar();">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>طلباتي</span>
+            </li>
+            <li class="menu-item" onclick="toggleLanguage(); toggleSidebar();">
+                <i class="fa-solid fa-language"></i>
+                <span id="langText">English</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- الحاوية الرئيسية للمحتوى -->
+    <div class="container">
+
+        <!-- 1. الشاشة الرئيسية -->
+        <div id="mainNav">
+            <div class="main-grid">
+                <div class="nav-card" onclick="showSection('followersSubMenu')">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <h3>متابعين</h3>
+                </div>
+                <div class="nav-card" onclick="showSection('likesSubMenu')">
+                    <i class="fa-solid fa-heart"></i>
+                    <h3>لايكات</h3>
+                </div>
+                <div class="nav-card" onclick="showSection('viewsSubMenu')">
+                    <i class="fa-solid fa-eye"></i>
+                    <h3>مشاهدات</h3>
+                </div>
+                <div class="nav-card" onclick="showSection('gamesSubMenu')">
+                    <i class="fa-solid fa-gamepad"></i>
+                    <h3>ألعاب وتطبيقات</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. قائمة المتابعين الفرعية -->
+        <div id="followersSubMenu" class="hidden">
+            <button class="form-control" style="margin-bottom: 15px; cursor:pointer;" onclick="showSection('mainNav')">⬅ العودة للرئيسية</button>
+            <div class="main-grid">
+                <div class="nav-card" onclick="openOrderForm('tiktok_followers', 'متابعين تيك توك ضمان 7 أيام', 'username')">
+                    <i class="fa-brands fa-tiktok"></i>
+                    <h3>متابعين تيك توك</h3>
+                </div>
+                <div class="nav-card" onclick="openOrderForm('insta_followers_indain', 'متابعين انستغرام هنود ضمانة 60 يوم', 'username')">
+                    <i class="fa-brands fa-instagram"></i>
+                    <h3>انستغرام (هنود)</h3>
+                </div>
+                <div class="nav-card" onclick="openOrderForm('insta_followers_real', 'متابعين انستغرام حقيقية ضمانة 30 يوم', 'username')">
+                    <i class="fa-brands fa-instagram"></i>
+                    <h3>انستغرام (حقيقي)</h3>
+                </div>
+                <div class="nav-card" onclick="openOrderForm('youtube_sub', 'مشتركين يوتيوب مع إعادة التعبئة', 'link')">
+                    <i class="fa-brands fa-youtube"></i>
+                    <h3>متابعين يوتيوب</h3>
+                </div>
+                <div class="nav-card" onclick="openOrderForm('telegram_members', 'أعضاء تيليجرام عرب ضمانة 30 يوم', 'link')">
+                    <i class="fa-brands fa-telegram"></i>
+                    <h3>أعضاء تلجرام</h3>
+                </div>
+                <div class="nav-card" onclick="openOrderForm('snap_followers', 'متابعين سناب شات حقيقي 20 في اليوم', 'username')">
+                    <i class="fa-brands fa-snapchat"></i>
+                    <h3>متابعين سناب شات</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. قائمة الألعاب والتطبيقات الفرعية -->
+        <div id="gamesSubMenu" class="hidden">
+            <button class="form-control" style="margin-bottom: 15px; cursor:pointer;" onclick="showSection('mainNav')">⬅ العودة للرئيسية</button>
+            <div class="main-grid">
+                <div class="nav-card" onclick="openOrderForm('pubg', 'شدات ببجي مبالغ مباشرة', 'id')">
+                    <i class="fa-solid fa-crosshairs"></i>
+                    <h3>شدات ببجي</h3>
+                </div>
+                <div class="nav-card" onclick="openOrderForm('freefire', 'جواهر فري فاير بالمعرف', 'id')">
+                    <i class="fa-solid fa-fire"></i>
+                    <h3>جواهر فري فاير</h3>
+                </div>
+                <div class="nav-card" onclick="openOrderForm('roblox_us', 'روبلوكس أمريكي', 'id')">
+                    <i class="fa-solid fa-cube"></i>
+                    <h3>روبلوكس أمريكي</h3>
+                </div>
+                <div class="nav-card" onclick="openOrderForm('itunes_us', 'آيتونز أمريكي (استلام كود)', 'email')">
+                    <i class="fa-brands fa-apple"></i>
+                    <h3>آيتونز أمريكي</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. نموذج الشراء والدفع -->
+        <div id="orderFormSection" class="hidden">
+            <button class="form-control" style="margin-bottom: 15px; cursor:pointer;" onclick="showSection('mainNav')">⬅ إلغاء والعودة</button>
+            <h2 id="serviceTitle" style="margin-bottom: 15px; color: var(--gold);">اسم الخدمة</h2>
+
+            <label>اختر الكمية والسعر:</label>
+            <div class="packages-grid" id="packagesContainer">
+                <!-- سيتم ملؤها ديناميكياً عبر JS -->
+            </div>
+
+            <!-- إدخال البيانات حسب نوع الخدمة -->
+            <div class="form-group" id="inputDataGroup">
+                <label id="inputLabel">رابط الصفحة أو اسم المستخدم:</label>
+                <input type="text" id="targetInput" class="form-control" placeholder="أدخل البيانات هنا...">
+            </div>
+
+            <!-- خيار الدفع -->
+            <div class="form-group">
+                <label>اختر طريقة الدفع:</label>
+                <select id="paymentMethodSelect" class="form-control" onchange="handlePaymentMethodChange()">
+                    <option value="transfer">تحويل رصيد مباشر</option>
+                    <option value="voucher">كتابة كارت الشحن</option>
+                </select>
+            </div>
+
+            <!-- تفاصيل تحويل الرصيد -->
+            <div id="transferDetails" class="info-box">
+                <p>قم بتحويل المبلغ إلى أحد الأرقام التالية:</p>
+                <p><b>المدار:</b> 0913147002</p>
+                <p><b>ليبيانا:</b> 0944235295</p>
+                <br>
+                <label>أدخل رقمك الذي حولت منه للتحقق:</label>
+                <input type="text" id="senderPhoneInput" class="form-control" placeholder="مثال: 0910000000">
+            </div>
+
+            <!-- تفاصيل كروت الشحن -->
+            <div id="voucherDetails" class="info-box hidden">
+                <label>اختر شركة الكارت:</label>
+                <div style="display:flex; gap:10px; margin-bottom:10px;">
+                    <button type="button" class="form-control" onclick="setVoucherCompany('ليبيانا')">ليبيانا</button>
+                    <button type="button" class="form-control" onclick="setVoucherCompany('مدار')">مدار</button>
+                </div>
+                <label id="voucherLabel">اكتب رقم كارت الشحن:</label>
+                <input type="text" id="voucherCodeInput" class="form-control" placeholder="أدخل الرمز السري للكارت...">
+            </div>
+
+            <button class="btn-submit" onclick="submitOrderToSwiseCenter()">طلب بالشراء الأن</button>
+        </div>
+
+        <!-- 5. قسم طلباتي -->
+        <div id="myOrdersSection" class="hidden">
+            <button class="form-control" style="margin-bottom: 15px; cursor:pointer;" onclick="showSection('mainNav')">⬅ العودة للرئيسية</button>
+            <h2>قائمة طلباتي</h2>
+            <br>
+            <div class="info-box">
+                <p><b>رقم الطلب:</b> #10023</p>
+                <p><b>الخدمة:</b> متابعين تيك توك 50 متابع</p>
+                <p><b>الحالة:</b> <span class="status-badge status-pending">قيد الانتظار</span></p>
+            </div>
+        </div>
+
+        <!-- 6. صندوق البريد الخاص بالأكواد (آيتونز وغيرها) -->
+        <div id="inboxSection" class="hidden">
+            <button class="form-control" style="margin-bottom: 15px; cursor:pointer;" onclick="showSection('mainNav')">⬅ العودة للرئيسية</button>
+            <h2>صندوق الأكواد المستلمة</h2>
+            <p style="font-size: 0.85rem; color: #ccc; margin-bottom: 15px;">هذه الأكواد خاصة بك فقط ولا يمكن لأحد آخر رؤيتها.</p>
+            <div class="info-box" style="border: 1px solid var(--gold);">
+                <p><b>الخدمة:</b> كارت آيتونز 10$ أمريكي</p>
+                <p><b>السعر المطلوب:</b> 55 د.ل</p>
+                <p><b>الكود:</b> <span style="color: red; font-weight: bold; font-size:1.2rem;">X89K-22LL-MM9N</span></p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- زر الواتساب العائم -->
+    <a href="https://wa.me/218913147002" class="whatsapp-float" target="_blank">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script>
+        let selectedPackage = null;
+        let selectedVoucherCompany = "ليبيانا";
+
+        // قوائم الأسعار المحددة في طلبك
+        const packagesData = {
+            'tiktok_followers': [
+                { count: '50 متابع', price: '2 د' },
+                { count: '100 متابع', price: '4 د' },
+                { count: '150 متابع', price: '5 د' },
+                { count: '200 متابع', price: '8 د' },
+                { count: '300 متابع', price: '12 د' },
+                { count: '500 متابع', price: '20 د' },
+                { count: '1000 متابع', price: '30 د' },
+                { count: '2000 متابع', price: '50 د' },
+                { count: '3000 متابع', price: '60 د' },
+                { count: '7000 متابع', price: '99 د' }
+            ],
+            'insta_followers_indain': [
+                { count: '50 متابع', price: '2 د' },
+                { count: '100 متابع', price: '4 د' },
+                { count: '120 متابع', price: '5 د' },
+                { count: '200 متابع', price: '8 د' },
+                { count: '300 متابع', price: '12 د' },
+                { count: '500 متابع', price: '15 د' },
+                { count: '1000 متابع', price: '25 د' },
+                { count: '3000 متابع', price: '45 د' },
+                { count: '5000 متابع', price: '68 د' },
+                { count: '7000 متابع', price: '99 د' }
+            ],
+            'insta_followers_real': [
+                { count: '60 متابع', price: '1 د' },
+                { count: '100 متابع', price: '3 د' },
+                { count: '200 متابع', price: '6 د' },
+                { count: '300 متابع', price: '10 د' },
+                { count: '500 متابع', price: '16 د' },
+                { count: '1000 متابع', price: '24 د' },
+                { count: '5000 متابع', price: '67 د' },
+                { count: '8000 متابع', price: '98 د' }
+            ]
+        };
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function showSection(sectionId) {
+            const sections = ['mainNav', 'followersSubMenu', 'gamesSubMenu', 'orderFormSection', 'myOrdersSection', 'inboxSection'];
+            sections.forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        function openOrderForm(serviceKey, title, inputType) {
+            document.getElementById('serviceTitle').innerText = title;
+            
+            const label = document.getElementById('inputLabel');
+            if (inputType === 'username') label.innerText = "رابط الصفحة أو اسم المستخدم:";
+            else if (inputType === 'link') label.innerText = "رابط الفيديو أو الصورة / القناة:";
+            else if (inputType === 'id') label.innerText = "اكتب الأيدي (ID) الخاص بحسابك:";
+            else if (inputType === 'email') label.innerText = "أدخل بريدك الإلكتروني لاستلام الكود:";
+
+            const container = document.getElementById('packagesContainer');
+            container.innerHTML = '';
+            
+            const list = packagesData[serviceKey] || [
+                { count: 'باقة 1', price: '10 د' },
+                { count: 'باقة 2', price: '20 د' }
+            ];
+
+            list.forEach((pkg, index) => {
+                const box = document.createElement('div');
+                box.className = 'package-box' + (index === 0 ? ' selected' : '');
+                box.innerHTML = `<span class="count">${pkg.count}</span><span class="price">${pkg.price}</span>`;
+                box.onclick = () => {
+                    document.querySelectorAll('.package-box').forEach(b => b.classList.remove('selected'));
+                    box.classList.add('selected');
+                    selectedPackage = pkg;
+                };
+                container.appendChild(box);
+            });
+
+            selectedPackage = list[0];
+            showSection('orderFormSection');
+        }
+
+        function handlePaymentMethodChange() {
+            const method = document.getElementById('paymentMethodSelect').value;
+            if (method === 'transfer') {
+                document.getElementById('transferDetails').classList.remove('hidden');
+                document.getElementById('voucherDetails').classList.add('hidden');
+            } else {
+                document.getElementById('transferDetails').classList.add('hidden');
+                document.getElementById('voucherDetails').classList.remove('hidden');
+            }
+        }
+
+        function setVoucherCompany(company) {
+            selectedVoucherCompany = company;
+            document.getElementById('voucherLabel').innerText = `اكتب رقم كارت الشحن (${company}):`;
+        }
+
+        function submitOrderToSwiseCenter() {
+            const targetData = document.getElementById('targetInput').value;
+            if(!targetData) {
+                alert("يرجى ملء كافة البيانات المطلوبة أولاً.");
+                return;
+            }
+
+            alert("تم الشراء يرجى الانتظار حين وصول الطلب");
+            showSection('myOrdersSection');
+        }
+
+        function toggleLanguage() {
+            const langBtn = document.getElementById('langText');
+            if(langBtn.innerText === 'English') {
+                langBtn.innerText = 'العربية';
+                alert("تم التغيير إلى اللغة الإنجليزية.");
+            } else {
+                langBtn.innerText = 'English';
+                alert("تم التغيير إلى اللغة العربية.");
+            }
+        }
+    </script>
+</body>
+</html>
